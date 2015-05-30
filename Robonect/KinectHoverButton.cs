@@ -1,5 +1,4 @@
-﻿
-namespace Robonect
+﻿namespace Robonect
 {
     using System;
     using System.ComponentModel;
@@ -8,28 +7,23 @@ namespace Robonect
 
     using Microsoft.Kinect.Toolkit.Controls;
 
+    using System.IO.Ports;
+    using System.Management;
+
     /// <summary>
     /// A button that continually triggers a click when the mouse or hand pointer hovers over it
     /// </summary>
     internal class KinectHoverButton : KinectButtonBase
     {
-        /// <summary>
-        /// IsHandPointerOver dependency property for use in the control template triggers
-        /// </summary>
+        SerialPort conexionArduino = new SerialPort();
+
         public static readonly DependencyProperty IsHandPointerOverProperty = DependencyProperty.Register(
             "IsHandPointerOver", typeof(bool), typeof(KinectHoverButton), new PropertyMetadata(false));
 
-        // Trigger a click 60 times per second
         private const int ButtonRepeatIntervalMilliseconds = 1000 / 60;
 
-        /// <summary>
-        /// Boolean value to tell us if the control is being displayed in the Visual Studio designer
-        /// </summary>
         private static readonly bool IsInDesignMode = DesignerProperties.GetIsInDesignMode(new DependencyObject());
 
-        /// <summary>
-        /// Timer to handle triggering the click events
-        /// </summary>
         private readonly DispatcherTimer repeatTimer;
 
         private HandPointer activeHandpointer;
@@ -42,6 +36,9 @@ namespace Robonect
                 this.repeatTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(ButtonRepeatIntervalMilliseconds) };
                 this.repeatTimer.Tick += this.RepeatTimerTick;
             }
+
+            conexionArduino.BaudRate = 9600;
+            conexionArduino.PortName = "COM4";
         }
 
         /// <summary>
@@ -72,6 +69,12 @@ namespace Robonect
             base.OnMouseLeave(e);
             this.IsHandPointerOver = false;
             this.repeatTimer.Stop();
+
+            conexionArduino.Open();
+
+            conexionArduino.WriteLine("a");
+
+            conexionArduino.Close();
         }
 
         private void InitializeKinectHoverButton()
@@ -107,6 +110,8 @@ namespace Robonect
             this.activeHandpointer = null;
             this.IsHandPointerOver = false;
             this.repeatTimer.Stop();
+
+            
         }
     }
 }

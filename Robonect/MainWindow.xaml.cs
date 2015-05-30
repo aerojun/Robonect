@@ -13,22 +13,42 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using System.IO.Ports;
+using System.Management;
+
 using Microsoft.Kinect;
 using Microsoft.Kinect.Toolkit;
 using Microsoft.Kinect.Toolkit.Controls;
 
 namespace Robonect
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private readonly KinectSensorChooser sensorChooser;
 
+        SerialPort conexionArduino = new SerialPort();
+
         public MainWindow()
         {
+
+            //-------ARDUINO--------
+            conexionArduino.BaudRate = 9600;
+            string nombrePuerto = "";
+            MessageBoxButton botones = MessageBoxButton.OKCancel;
+
+            nombrePuerto = puertoArduino();
+
+            while (nombrePuerto == null)
+            {
+                MessageBox.Show("Dispositivo no Enlazado", "Error", botones);
+                nombrePuerto = puertoArduino();
+            }
+
+            conexionArduino.PortName = nombrePuerto;
+
             InitializeComponent();
+
+            WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
 
             // initialize the sensor chooser and UI
             this.sensorChooser = new KinectSensorChooser();
@@ -44,13 +64,12 @@ namespace Robonect
         private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             this.sensorChooser.Stop();
+
+            if  ( conexionArduino.IsOpen )
+                conexionArduino.Close();
         }
 
-        /// <summary>
-        /// Called when the KinectSensorChooser gets a new sensor
-        /// </summary>
-        /// <param name="sender">sender of the event</param>
-        /// <param name="args">event arguments</param>
+
         private static void SensorChooserOnKinectChanged(object sender, KinectChangedEventArgs args)
         {
             if (args.OldSensor != null)
@@ -96,24 +115,100 @@ namespace Robonect
             }
         }
 
-        /// <summary>
-        /// Handle paging right (next button).
-        /// </summary>
-        /// <param name="sender">Event sender</param>
-        /// <param name="e">Event arguments</param>
-        private void PageRightButtonClick(object sender, RoutedEventArgs e)
+        //Mover Motores
+
+        private void AbrirPinza(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Derecha");
+            try
+            {
+                conexionArduino.Open();
+
+                conexionArduino.WriteLine("A");
+
+                conexionArduino.Close();
+
+            }
+            catch (System.IO.IOException error)
+            {
+                MessageBox.Show(error.ToString());
+            }
         }
 
-        /// <summary>
-        /// Handle paging left (previous button).
-        /// </summary>
-        /// <param name="sender">Event sender</param>
-        /// <param name="e">Event arguments</param>
-        private void PageLeftButtonClick(object sender, RoutedEventArgs e)
+        private void CerrarPinza(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Izquierda");
+            MessageBox.Show("Cerrar Pinza");
+
+        }
+
+        private void IzquierdaMotor1(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("IzquierdaMotor1");
+        }
+
+        private void DerechaMotor1(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("DerechaMotor1");
+
+        }
+
+        private void IzquierdaMotor2(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("IzquierdaMotor2");
+        }
+
+        private void DerechaMotor2(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("DerechaMotor2");
+
+        }
+
+        private void IzquierdaMotor3(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("IzquierdaMotor3");
+        }
+
+        private void DerechaMotor3(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("DerechaMotor3");
+
+        }
+
+        private void IzquierdaBase(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("IzquierdaBase");
+        }
+
+        private void DerechaBase(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("DerechaBase");
+
+        }
+
+        private static string puertoArduino()
+        {
+            ManagementScope connectionScope = new ManagementScope();
+            SelectQuery serialQuery = new SelectQuery("SELECT * FROM Win32_SerialPort");
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher(connectionScope, serialQuery);
+
+            try
+            {
+                foreach (ManagementObject item in searcher.Get())
+                {
+                    string desc = item["Description"].ToString();
+                    string deviceId = item["DeviceID"].ToString();
+
+                    if (desc.Contains("Arduino"))
+                    {
+                        return deviceId;
+                    }
+                }
+            }
+            catch (ManagementException e)
+            {
+                MessageBox.Show(e.Message.ToString());
+            }
+
+            return null;
         }
     }
 }
