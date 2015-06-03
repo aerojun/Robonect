@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Kinect.Toolkit", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Kinect.Toolkit.Controls", "Microsoft.Kinect.Toolkit.Controls\Microsoft.Kinect.Toolkit.Controls.csproj", "{4508C4D1-85BB-4F3F-9E3B-CC93D231C65D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RobonectArduino", "..\..\..\Arduino\RobonectArduino\RobonectArduino.vcxproj", "{E937A9CB-A920-42E5-9722-00B5911B80AA}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,16 +53,6 @@ Global
 		{4508C4D1-85BB-4F3F-9E3B-CC93D231C65D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{4508C4D1-85BB-4F3F-9E3B-CC93D231C65D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4508C4D1-85BB-4F3F-9E3B-CC93D231C65D}.Release|Win32.ActiveCfg = Release|Any CPU
-		{E937A9CB-A920-42E5-9722-00B5911B80AA}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{E937A9CB-A920-42E5-9722-00B5911B80AA}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{E937A9CB-A920-42E5-9722-00B5911B80AA}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{E937A9CB-A920-42E5-9722-00B5911B80AA}.Debug|Win32.ActiveCfg = Debug|Win32
-		{E937A9CB-A920-42E5-9722-00B5911B80AA}.Debug|Win32.Build.0 = Debug|Win32
-		{E937A9CB-A920-42E5-9722-00B5911B80AA}.Release|Any CPU.ActiveCfg = Release|Win32
-		{E937A9CB-A920-42E5-9722-00B5911B80AA}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{E937A9CB-A920-42E5-9722-00B5911B80AA}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{E937A9CB-A920-42E5-9722-00B5911B80AA}.Release|Win32.ActiveCfg = Release|Win32
-		{E937A9CB-A920-42E5-9722-00B5911B80AA}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

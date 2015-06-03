@@ -25,27 +25,14 @@ namespace Robonect
     public partial class MainWindow : Window
     {
         private readonly KinectSensorChooser sensorChooser;
-
-        SerialPort conexionArduino = new SerialPort();
+        Arduino device;
 
         public MainWindow()
         {
+            //Arduino
+            device = new Arduino();
 
-            //-------ARDUINO--------
-            conexionArduino.BaudRate = 9600;
-            string nombrePuerto = "";
-            MessageBoxButton botones = MessageBoxButton.OKCancel;
-
-            nombrePuerto = puertoArduino();
-
-            while (nombrePuerto == null)
-            {
-                MessageBox.Show("Dispositivo no Enlazado", "Error", botones);
-                nombrePuerto = puertoArduino();
-            }
-
-            conexionArduino.PortName = nombrePuerto;
-
+            //Kinect
             InitializeComponent();
 
             WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
@@ -65,8 +52,8 @@ namespace Robonect
         {
             this.sensorChooser.Stop();
 
-            if  ( conexionArduino.IsOpen )
-                conexionArduino.Close();
+            if ( device.isOpen() )
+                device.close();
         }
 
 
@@ -119,19 +106,7 @@ namespace Robonect
 
         private void AbrirPinza(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                conexionArduino.Open();
-
-                conexionArduino.WriteLine("A");
-
-                conexionArduino.Close();
-
-            }
-            catch (System.IO.IOException error)
-            {
-                MessageBox.Show(error.ToString());
-            }
+            device.send("1");
         }
 
         private void CerrarPinza(object sender, RoutedEventArgs e)
@@ -182,33 +157,6 @@ namespace Robonect
         {
             MessageBox.Show("DerechaBase");
 
-        }
-
-        private static string puertoArduino()
-        {
-            ManagementScope connectionScope = new ManagementScope();
-            SelectQuery serialQuery = new SelectQuery("SELECT * FROM Win32_SerialPort");
-            ManagementObjectSearcher searcher = new ManagementObjectSearcher(connectionScope, serialQuery);
-
-            try
-            {
-                foreach (ManagementObject item in searcher.Get())
-                {
-                    string desc = item["Description"].ToString();
-                    string deviceId = item["DeviceID"].ToString();
-
-                    if (desc.Contains("Arduino"))
-                    {
-                        return deviceId;
-                    }
-                }
-            }
-            catch (ManagementException e)
-            {
-                MessageBox.Show(e.Message.ToString());
-            }
-
-            return null;
         }
     }
 }

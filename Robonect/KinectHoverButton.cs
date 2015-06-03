@@ -15,8 +15,6 @@
     /// </summary>
     internal class KinectHoverButton : KinectButtonBase
     {
-        SerialPort conexionArduino = new SerialPort();
-
         public static readonly DependencyProperty IsHandPointerOverProperty = DependencyProperty.Register(
             "IsHandPointerOver", typeof(bool), typeof(KinectHoverButton), new PropertyMetadata(false));
 
@@ -28,6 +26,9 @@
 
         private HandPointer activeHandpointer;
 
+        //Arduino
+        Arduino device;
+
         public KinectHoverButton()
         {
             if (!IsInDesignMode)
@@ -35,10 +36,9 @@
                 this.InitializeKinectHoverButton();
                 this.repeatTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(ButtonRepeatIntervalMilliseconds) };
                 this.repeatTimer.Tick += this.RepeatTimerTick;
-            }
 
-            conexionArduino.BaudRate = 9600;
-            conexionArduino.PortName = "COM4";
+                 device = new Arduino();
+            }
         }
 
         /// <summary>
@@ -70,11 +70,9 @@
             this.IsHandPointerOver = false;
             this.repeatTimer.Stop();
 
-            conexionArduino.Open();
-
-            conexionArduino.WriteLine("a");
-
-            conexionArduino.Close();
+            //Arduino
+            device.send("0");
+            device.close();
         }
 
         private void InitializeKinectHoverButton()
